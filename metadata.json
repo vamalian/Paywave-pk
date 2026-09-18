@@ -1,0 +1,6 @@
+{
+  "name": "PayWave PK",
+  "description": "Production-ready Android digital wallet with biometric security, verified KYC, instant transfers, bills, recharge, and QR payments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
