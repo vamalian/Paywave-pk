@@ -243,6 +243,26 @@ fun LoginScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Biometric Quick Unlock", fontWeight = FontWeight.SemiBold)
                     }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    OutlinedButton(
+                        onClick = { viewModel.navigateTo(ScreenRoute.ADMIN_DASHBOARD) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .testTag("login_admin_portal_button"),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = PayWaveGold)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Shield,
+                            contentDescription = null,
+                            tint = PayWaveGold
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Admin & Compliance Portal", fontWeight = FontWeight.Bold)
+                    }
                 }
             }
 
@@ -693,6 +713,26 @@ fun SetPinScreen(
                 } else {
                     Text("Activate Wallet", fontWeight = FontWeight.Bold, fontSize = 15.sp)
                 }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                onClick = { viewModel.navigateTo(ScreenRoute.ADMIN_DASHBOARD) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .testTag("register_admin_portal_button"),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = PayWaveGold)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Shield,
+                    contentDescription = null,
+                    tint = PayWaveGold
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Open Admin & Compliance Portal", fontWeight = FontWeight.Bold)
             }
 
             val displayError = errorMessage ?: uiState.errorMessage

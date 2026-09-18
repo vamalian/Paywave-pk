@@ -300,129 +300,145 @@ fun AdminDashboardScreen(
     viewModel: PayWaveViewModel,
     modifier: Modifier = Modifier
 ) {
+    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            AdminDashboardContent(
+                viewModel = viewModel,
+                onBackClick = { viewModel.navigateTo(ScreenRoute.HOME) }
+            )
+        }
+    }
+}
+
+@Composable
+fun AdminDashboardContent(
+    viewModel: PayWaveViewModel,
+    modifier: Modifier = Modifier,
+    onBackClick: (() -> Unit)? = null
+) {
     var selectedTab by remember { mutableIntStateOf(0) }
     val currentUser by viewModel.currentUser.collectAsState()
     val ledgerEntries by viewModel.ledgerEntries.collectAsState()
     val providers = remember { PaymentProviderRegistry.getAllProviders() }
 
-    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
-        Column(
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+        // Header
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Header
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            if (onBackClick != null) {
                 IconButton(
-                    onClick = { viewModel.navigateTo(ScreenRoute.HOME) },
+                    onClick = onBackClick,
                     modifier = Modifier.testTag("admin_back_button")
                 ) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Admin & Compliance Portal",
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(PayWaveGold)
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text("ADMIN", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
-                        }
-                    }
-                    Text(
-                        text = "Role-Based Access Control (RBAC) • Auditor Mode",
-                        fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
             }
-
-            // Auditor Session Card with Masked Email Protection
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 14.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Shield,
-                            contentDescription = null,
-                            tint = PayWaveGreenBright,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Column {
-                            Text(
-                                text = "Admin: ${currentUser?.fullName ?: "Fawaz Ahmad"}",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = "Email: f••••••••••••@gmail.com",
-                                fontSize = 10.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Admin & Compliance Portal",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
-                            .background(PayWaveGreenBright.copy(alpha = 0.15f))
+                            .background(PayWaveGold)
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
+                        Text("ADMIN", fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+                    }
+                }
+                Text(
+                    text = "Role-Based Access Control (RBAC) • Auditor Mode",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // Auditor Session Card with Masked Email Protection
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Shield,
+                        contentDescription = null,
+                        tint = PayWaveGreenBright,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
                         Text(
-                            text = "EMAIL VERIFIED",
-                            fontSize = 9.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = PayWaveGreenBright
+                            text = "Admin: ${currentUser?.fullName ?: "Fawaz Ahmad"}",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Email: f••••••••••••@gmail.com",
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(PayWaveGreenBright.copy(alpha = 0.15f))
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = "EMAIL VERIFIED",
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = PayWaveGreenBright
+                    )
+                }
             }
+        }
 
-            // Tabs
-            TabRow(
-                selectedTabIndex = selectedTab,
-                containerColor = MaterialTheme.colorScheme.surface
-            ) {
-                Tab(
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 },
-                    text = { Text("KYC Queue", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
-                )
-                Tab(
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 },
-                    text = { Text("Ledger Chain", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
-                )
-                Tab(
-                    selected = selectedTab == 2,
-                    onClick = { selectedTab = 2 },
-                    text = { Text("Provider Rails", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
-                )
-            }
+        // Tabs
+        TabRow(
+            selectedTabIndex = selectedTab,
+            containerColor = MaterialTheme.colorScheme.surface
+        ) {
+            Tab(
+                selected = selectedTab == 0,
+                onClick = { selectedTab = 0 },
+                text = { Text("KYC Queue", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
+            )
+            Tab(
+                selected = selectedTab == 1,
+                onClick = { selectedTab = 1 },
+                text = { Text("Ledger Chain", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
+            )
+            Tab(
+                selected = selectedTab == 2,
+                onClick = { selectedTab = 2 },
+                text = { Text("Provider Rails", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
+            )
+        }
 
+        Box(modifier = Modifier.fillMaxSize().weight(1f)) {
             when (selectedTab) {
                 0 -> {
                     // KYC Queue
