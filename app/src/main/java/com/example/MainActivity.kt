@@ -45,6 +45,7 @@ import com.example.ui.screens.AddMoneyScreen
 import com.example.ui.screens.AdminDashboardScreen
 import com.example.ui.screens.BankTransferScreen
 import com.example.ui.screens.BillPaymentScreen
+import com.example.ui.screens.FreeFireVoucherScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.KycVerificationScreen
 import com.example.ui.screens.LoginScreen
@@ -123,6 +124,7 @@ fun PayWaveApp(viewModel: PayWaveViewModel) {
                 ScreenRoute.RECEIPT -> ReceiptScreen(viewModel = viewModel)
                 ScreenRoute.KYC_VERIFY -> KycVerificationScreen(viewModel = viewModel)
                 ScreenRoute.ADMIN_DASHBOARD -> AdminDashboardScreen(viewModel = viewModel)
+                ScreenRoute.FREE_FIRE_VOUCHER -> FreeFireVoucherScreen(viewModel = viewModel)
                 ScreenRoute.SETTINGS -> SettingsScreen(viewModel = viewModel)
                 ScreenRoute.SUPPORT -> SupportAndDisputeScreen(viewModel = viewModel)
             }

@@ -35,27 +35,27 @@ class WalletRepository(private val context: Context) {
     suspend fun ensureInitialized() = withContext(Dispatchers.IO) {
         val existing = dao.getWallet()
         if (existing == null) {
-            val walletId = "PW-WLT-582910"
+            val walletId = "PW-WLT-${System.currentTimeMillis().toString().takeLast(6)}"
             val wallet = WalletEntity(
                 walletId = walletId,
                 userId = "default_user_1",
-                availableBalance = 38450.0,
-                ledgerBalance = 38450.0,
+                availableBalance = 25000.0,
+                ledgerBalance = 25000.0,
                 currency = "PKR",
-                dailySpentAmount = 4500.0,
-                monthlySpentAmount = 24500.0,
+                dailySpentAmount = 1500.0,
+                monthlySpentAmount = 12500.0,
                 dailyLimit = 50000.0,
                 monthlyLimit = 200000.0
             )
             dao.insertWallet(wallet)
 
-            // Seed initial verified genesis ledger entry
+            // Genesis ledger entry
             val genesisHash = SecurityUtils.calculateLedgerHash(
                 previousHash = "0000000000000000000000000000000000000000000000000000000000000000",
                 entryId = "PW-LEDGER-GENESIS",
-                amount = 38450.0,
+                amount = 25000.0,
                 type = "CREDIT",
-                timestamp = System.currentTimeMillis() - 86400000L
+                timestamp = System.currentTimeMillis()
             )
             dao.insertLedgerEntry(
                 LedgerEntryEntity(
@@ -63,62 +63,12 @@ class WalletRepository(private val context: Context) {
                     walletId = walletId,
                     transactionId = "PW-INIT-CREDIT",
                     type = "CREDIT",
-                    amount = 38450.0,
+                    amount = 25000.0,
                     balanceBefore = 0.0,
-                    balanceAfter = 38450.0,
+                    balanceAfter = 25000.0,
                     previousHash = "0000000000000000000000000000000000000000000000000000000000000000",
                     entryHash = genesisHash,
-                    timestamp = System.currentTimeMillis() - 86400000L
-                )
-            )
-
-            // Seed initial verified transaction records
-            val initialTx = TransactionEntity(
-                id = UUID.randomUUID().toString(),
-                transactionRef = "PW-84920192",
-                walletId = walletId,
-                type = "RECEIVE",
-                category = "Received",
-                amount = 12000.0,
-                fee = 0.0,
-                status = "SUCCESS",
-                recipientOrBiller = "03008492011",
-                recipientTitle = "Asad Khan (Raast Transfer)",
-                providerRef = "RAAST-TX-839210",
-                note = "Consulting fee settlement",
-                timestamp = System.currentTimeMillis() - 3600000L * 4
-            )
-            dao.insertTransaction(initialTx)
-
-            // Seed frequent beneficiaries
-            dao.insertBeneficiary(
-                BeneficiaryEntity(
-                    id = UUID.randomUUID().toString(),
-                    name = "Fatima Tariq",
-                    identifier = "03014492018",
-                    type = "WALLET",
-                    bankName = "PayWave PK Wallet",
-                    isFavorite = true
-                )
-            )
-            dao.insertBeneficiary(
-                BeneficiaryEntity(
-                    id = UUID.randomUUID().toString(),
-                    name = "Ali Raza",
-                    identifier = "PK36MEZN0001020304050607",
-                    type = "BANK",
-                    bankName = "Meezan Bank Ltd",
-                    isFavorite = true
-                )
-            )
-            dao.insertBeneficiary(
-                BeneficiaryEntity(
-                    id = UUID.randomUUID().toString(),
-                    name = "LESCO Lahore Bill",
-                    identifier = "08112233445566U",
-                    type = "BANK",
-                    bankName = "LESCO Electricity",
-                    isFavorite = false
+                    timestamp = System.currentTimeMillis()
                 )
             )
         }

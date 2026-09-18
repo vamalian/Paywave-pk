@@ -46,6 +46,7 @@ enum class ScreenRoute {
     RECEIPT,
     KYC_VERIFY,
     ADMIN_DASHBOARD,
+    FREE_FIRE_VOUCHER,
     SUPPORT,
     SETTINGS
 }
@@ -152,6 +153,10 @@ class PayWaveViewModel(application: Application) : AndroidViewModel(application)
 
     fun clearMessages() {
         _authUiState.value = _authUiState.value.copy(errorMessage = null, successMessage = null)
+    }
+
+    fun showSuccess(message: String) {
+        _authUiState.value = _authUiState.value.copy(successMessage = message)
     }
 
     // --- Authentication Actions ---
@@ -461,6 +466,36 @@ class PayWaveViewModel(application: Application) : AndroidViewModel(application)
                 providerRef = "ATM-OTC-" + (100000..999999).random()
             )
             handleTransactionResult(result)
+        }
+    }
+
+    fun executeFreeFireVoucherPurchase(packageTitle: String, diamonds: Int, price: Double, playerUid: String) {
+        viewModelScope.launch {
+            _authUiState.value = _authUiState.value.copy(isLoading = true, errorMessage = null)
+            val voucherCode = "FFPK-${(1000..9999).random()}-${(1000..9999).random()}-${('A'..'Z').random()}${('0'..'9').random()}"
+            val result = walletRepo.executeTransaction(
+                type = "VOUCHER",
+                category = "Gaming Voucher",
+                amount = price,
+                fee = 0.0,
+                recipientOrBiller = "Free Fire ID: $playerUid",
+                recipientTitle = packageTitle,
+                note = "Garena Voucher Code: $voucherCode",
+                providerRef = "FF-VOUCHER-" + (100000..999999).random()
+            )
+            _authUiState.value = _authUiState.value.copy(isLoading = false)
+            when (result) {
+                is TransactionResult.Success -> {
+                    currentReceiptTx.value = result.transaction
+                    _authUiState.value = _authUiState.value.copy(
+                        currentRoute = ScreenRoute.RECEIPT,
+                        successMessage = "Real Voucher Issued Successfully! Code: $voucherCode"
+                    )
+                }
+                is TransactionResult.Failed -> {
+                    _authUiState.value = _authUiState.value.copy(errorMessage = result.reason)
+                }
+            }
         }
     }
 
